@@ -88,13 +88,21 @@ if __name__ == "__main__":
     ##     is returned
     ## shortest_path: (setof Str) Str (dictof Str (listof Str)) -> (anyof (listof Str) False)
     def shortest_path(starts, goal, graph):
+        finished = set()
+        f_queue = []
         for start in starts:
+            f_queue += list(graph.get(start) or set())
             graph[start] = set()
+        while f_queue:
+            v = f_queue.pop()
+            finished.update({v})
+            f_queue += list(graph.get(v) or set())
         path = [goal]
         queue = [goal]
         while queue:
             v = queue.pop()
             for task in (graph.get(v) or set()) - set(path):
+                if task in finished: continue
                 path = [task] + path
                 queue.append(task)
         return path
